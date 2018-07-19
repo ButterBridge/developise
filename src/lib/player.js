@@ -1,4 +1,4 @@
-export class Person {
+class Player {
     constructor (name) {
         this.name = name;
         this.experience = 0;
@@ -8,9 +8,8 @@ export class Person {
             'TwoSheetsSheets' : 1
         };
     }
+}
 
-    cloneMe () {
-        const newThis = Object.assign(Object.create(Object.getPrototypeOf(this)), this);
-        console.log(Object.entries(this))
-    }
+export const createPlayer = () => {
+    return new Player();
 }

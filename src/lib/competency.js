@@ -1,6 +1,5 @@
 export class Competency {
     constructor (name, {type, description, difficulty, fields, reliances, favour}) {
-        console.log(type, type, type);
         this.name = name;
         this.description = description;
         this.type = type;
@@ -31,7 +30,6 @@ const competenciesData = {
 }
 export const getCompetencies = () => {
     return Object.entries(competenciesData).reduce((competencies, [competencyName, competencyData]) => {
-        console.log(competencyData);
         competencies[competencyName] = new Competency(competencyName, competencyData);
         return competencies;
     }, {});
