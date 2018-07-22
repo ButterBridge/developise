@@ -5,14 +5,14 @@ export const generateJob = (companies) => {
     const jobDifficulty = determineJobDifficulty(jobCompany)
     const jobLength = determineJobLength(jobCompany);
     const jobPay = determinePay(jobCompany, jobDifficulty, jobLength);
-    const details = {
+    const job = {
         company : jobCompany,
         age : 0,
         difficulty : jobDifficulty,
         hours : jobLength,
         pay : Math.floor(jobPay / 20) * 20
     }
-    return new Job(details);
+    return job
 }
 
 const determineJobDifficulty = company => {
