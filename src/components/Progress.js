@@ -6,9 +6,9 @@ class Progress extends Component {
     render() {
         const {progressToNextDay} = this.props;
         return (
-            <div>
+            <section>
                 <button onClick={progressToNextDay}>The next day...</button>
-            </div>
+            </section>
         );
     }
 }
