@@ -1,6 +1,5 @@
 
 export const pickViaShare = (entities, key) => {
-    console.log(entities);
     const spread = Object.values(entities).reduce((spreadSoFar, entity) => {
         const portion = Array(entity[key]).fill(entity);
         return [...spreadSoFar, ...portion];

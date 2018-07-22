@@ -3,6 +3,7 @@ import {generateJob} from '../utils/job';
 
 const initialState = {
     day : 0,
+    phase : 1,
     jobs : []
 }
 
@@ -13,18 +14,14 @@ export default (state = initialState, action = {payload : {}}) => {
         return {
             ...state,
             jobs : [...state.jobs, newJob],
-            day : state.day + 1
+            day : state.day + 1,
+            phase : 0
         };
-    // case types.LISTEN_TO_ARTICLES:
-    //     return {
-    //         ...state,
-    //         ...action.payload
-    //     };
-    // case types.UPDATE_THREAD_KEYS:
-    //     return {
-    //         ...state,
-    //         ...action.payload
-    //     };
+    case types.PROGRESS_TO_NEXT_PHASE:
+        return {
+            ...state,
+            phase : state.phase + 1
+        };
     default:
         return state;
     }

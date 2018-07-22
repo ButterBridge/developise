@@ -16,6 +16,15 @@ const initialState = {
         fields : ['front-end', 'design'],
         reliances : [],
         favour : 5
+    },
+    'WordRelease' : {
+        name : 'WordRelease',
+        type : 'system',
+        description : 'There is no denying that this is a way for you to get stuff on screen.',
+        difficulty : 1,
+        fields : ['front-end', 'design', 'back-end'],
+        reliances : [],
+        favour : 7
     }
 }
 

@@ -3,7 +3,6 @@ import {pickViaShare, pickViaLoading} from './helpers';
 export const generateJob = (companies, competencies) => {
     const jobCompany = pickViaShare(companies, 'prestige');
     const jobDifficulty = determineJobDifficulty(jobCompany)
-    console.log(jobCompany);
     const jobCompetencies = determineJobCompetencies(jobCompany, jobDifficulty, competencies);
     const jobLength = determineJobLength(jobCompany);
     const jobPay = determinePay(jobCompany, jobDifficulty, jobLength);
@@ -12,8 +11,9 @@ export const generateJob = (companies, competencies) => {
         company : jobCompany,
         competencies : jobCompetencies,
         deadline : jobApplicationDeadline,
-        hours : jobLength,
-        pay : Math.floor(jobPay / 20) * 20
+        hoursToComplete : jobLength,
+        pay : Math.floor(jobPay / 20) * 20,
+        hoursToDiscover : Math.random() * 24
     }
     return job;
 }
@@ -27,10 +27,14 @@ const determineJobDifficulty = company => {
 const determineJobCompetencies = (company, difficulty, competencies) => {
     return Array(difficulty).fill().reduce((acc, x) => {
         const field = pickViaLoading(company.fields);
-        const competency = pickViaShare(competencies, 'favour');
+        const fieldCompetencies = Object.values(competencies).reduce((acc, competency) => {
+            if (competency.fields.includes(field)) acc[competency.name] = competency;
+            return acc;
+        }, {});
+        const competency = pickViaShare(fieldCompetencies, 'favour');
         acc[competency.name] = acc[competency.name] ? acc[competency.name] + 1 : 1;
         return acc;
-    }, {})
+    }, {});
 }
 
 const determineJobLength = company => {

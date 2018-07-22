@@ -8,5 +8,17 @@ export const progressToNextDay = () => dispatch => {
         payload : {
             companies, competencies
         }
-    })
+    });
+}
+
+export const progressToNextPhase = () => dispatch => dispatch({type : types.PROGRESS_TO_NEXT_PHASE});
+
+export const learnCompetency = competency => dispatch => {
+    dispatch({
+        type : types.LEARN_COMPETENCY,
+        payload : {
+            competency,
+            increase : Math.random() * 60
+        }
+    });
 }
