@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import { GameProvider } from './components/contexts/game-context';
+import {Provider} from 'react-redux';
+import store from './store';
 
 
-ReactDOM.render(<GameProvider><App /></GameProvider>, document.getElementById('root'));
+ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));

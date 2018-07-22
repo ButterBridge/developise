@@ -1,10 +1,4 @@
-class Job {
-    constructor (details) {
-        Object.keys(details).forEach(detail => {
-            this[detail] = details[detail];
-        })
-    }
-}
+import {pickViaShare} from './helpers';
 
 export const generateJob = (companies) => {
     const jobCompany = pickViaShare(companies, 'prestige');
@@ -19,15 +13,6 @@ export const generateJob = (companies) => {
         pay : Math.floor(jobPay / 20) * 20
     }
     return new Job(details);
-}
-
-const pickViaShare = (entities, key) => {
-    const spread = Object.values(entities).reduce((spreadSoFar, entity) => {
-        const portion = Array(entity[key]).fill(entity);
-        return [...spreadSoFar, ...portion];
-    }, []);
-    const rNum = Math.floor(Math.random() * spread.length);
-    return spread[rNum];
 }
 
 const determineJobDifficulty = company => {
