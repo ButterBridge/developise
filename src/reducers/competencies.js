@@ -1,5 +1,6 @@
 const initialState = {
     'LMTH' : {
+        name : 'LMTH',
         type : 'language',
         description : 'The go-to language for making stuff appear on screen. No escaping it.',
         difficulty : 1,
@@ -8,6 +9,7 @@ const initialState = {
         favour : 7
     },
     'HearSS' : {
+        name : 'HearSS',
         type : 'language',
         description : 'Want to make your stuff look pretty? Well, you could try here, I guess.',
         difficulty : 1,
@@ -18,8 +20,5 @@ const initialState = {
 }
 
 export default (state = initialState, action = {payload : {}}) => {
-    return {
-        ...state,
-        ...action.payload
-    }
+    return state
 }

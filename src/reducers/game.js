@@ -9,7 +9,7 @@ const initialState = {
 export default (state = initialState, action = {payload : {}}) => {
     switch (action.type) {
     case types.PROGRESS_TO_NEXT_DAY:
-        const newJob = generateJob(action.payload.companies);
+        const newJob = generateJob(action.payload.companies, action.payload.competencies);
         return {
             ...state,
             jobs : [...state.jobs, newJob],
