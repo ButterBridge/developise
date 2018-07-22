@@ -7,11 +7,12 @@ export class Competency {
         this.fields = fields;
         this.reliances = reliances || [];
         this.favour = favour || 0;
+        this.mod = 0;
     }
 }
 
 const competenciesData = {
-    '12ML' : {
+    'LMTH' : {
         type : 'language',
         description : 'The go-to language for making stuff appear on screen. No escaping it.',
         difficulty : 1,
@@ -19,7 +20,7 @@ const competenciesData = {
         reliances : [],
         favour : 7
     },
-    'TwoSheetsSheets' : {
+    'HearSS' : {
         type : 'language',
         description : 'Want to make your stuff look pretty? Well, you could try here, I guess.',
         difficulty : 1,

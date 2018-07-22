@@ -4,8 +4,8 @@ class Player {
         this.experience = 0;
         this.portfolio = [];
         this.competencies = {
-            '12ML' : 1,
-            'TwoSheetsSheets' : 1
+            'LMTH' : 1,
+            'HearSS' : 1
         };
     }
 }
