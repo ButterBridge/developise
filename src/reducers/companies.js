@@ -6,10 +6,11 @@ const initialState = {
         prestige : 1,
         formality : 0,
         fields : {
-            'front-end' : 3,
-            'back-end' : 4,
-            'design' : 3
-        }
+            'IT' : 9,
+            'design' : 1
+        },
+        drawToPlayer : 10,
+        advertisesIn : ['family-friends']
     },
     'neighbourhood' : {
         name : 'the neigbourhood',
@@ -18,10 +19,13 @@ const initialState = {
         prestige : 2,
         formality : 0.1,
         fields : {
-            'front-end' : 4,
-            'back-end' : 3,
-            'design' : 3
-        }
+            'IT' : 7,
+            'front-end' : 1,
+            'back-end' : 1,
+            'design' : 1
+        },
+        drawToPlayer : 2,
+        advertisesIn : ['neighbourhood']
     },
     'social media' : {
         name : 'someone on social media',
@@ -30,10 +34,13 @@ const initialState = {
         prestige : 2,
         formality : 0.1,
         fields : {
-            'front-end' : 3,
-            'back-end' : 3,
-            'design' : 4
-        }
+            'IT' : 5,
+            'front-end' : 2,
+            'back-end' : 1,
+            'design' : 2
+        },
+        drawToPlayer : 2,
+        advertisesIn : ['social media']
     }
 }
 

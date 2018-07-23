@@ -13,6 +13,13 @@ export const progressToNextDay = () => dispatch => {
 
 export const progressToNextPhase = () => dispatch => dispatch({type : types.PROGRESS_TO_NEXT_PHASE});
 
+export const exploreSource = (source, effectivenessMult) => dispatch => {
+    dispatch({
+        type : types.EXPLORE_SOURCE,
+        payload : {source, effectivenessMult}
+    })
+}
+
 export const learnCompetency = competency => dispatch => {
     dispatch({
         type : types.LEARN_COMPETENCY,

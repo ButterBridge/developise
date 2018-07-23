@@ -1,4 +1,13 @@
 const initialState = {
+    'Skillz' : {
+        name : 'Skillz',
+        type : 'computers',
+        description : 'This is what all your mates who know nothing about computers call what you know about computers.',
+        difficulty : 1,
+        fields : ['IT'],
+        reliances : [],
+        favour : 10
+    },
     'LMTH' : {
         name : 'LMTH',
         type : 'language',
@@ -24,7 +33,7 @@ const initialState = {
         difficulty : 1,
         fields : ['front-end', 'design', 'back-end'],
         reliances : [],
-        favour : 7
+        favour : 5
     }
 }
 

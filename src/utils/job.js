@@ -1,9 +1,11 @@
 import {pickViaShare, pickViaLoading} from './helpers';
+import {shuffle} from 'lodash';
 
 export const generateJob = (companies, competencies) => {
     const jobCompany = pickViaShare(companies, 'prestige');
     const jobDifficulty = determineJobDifficulty(jobCompany)
     const jobCompetencies = determineJobCompetencies(jobCompany, jobDifficulty, competencies);
+    const jobAdvertisedIn = determineJobAdvertisedIn(jobCompany);
     const jobLength = determineJobLength(jobCompany);
     const jobPay = determinePay(jobCompany, jobDifficulty, jobLength);
     const jobApplicationDeadline = determineApplicationDeadline(jobCompany);
@@ -11,9 +13,14 @@ export const generateJob = (companies, competencies) => {
         company : jobCompany,
         competencies : jobCompetencies,
         deadline : jobApplicationDeadline,
-        hoursToComplete : jobLength,
         pay : Math.floor(jobPay / 20) * 20,
-        hoursToDiscover : Math.random() * 24
+        advertisedIn : jobAdvertisedIn,
+        hoursToDiscover : Math.random() * 24,
+        discoveredIn : null,
+        applicants : 0,
+        hoursToComplete : jobLength,
+        undertaken : false,
+        hoursPutIn : 0
     }
     return job;
 }
@@ -22,6 +29,12 @@ const determineJobDifficulty = company => {
     const prestigeDifficulty = Math.floor(Math.random() * company.prestige, 0);
     const randomDifficulty = Math.floor(Math.random() * 5 - 2.5);
     return Math.max(prestigeDifficulty + randomDifficulty, 1);
+}
+
+const determineJobAdvertisedIn = company => {
+    const numberOfSourcesAdvertisedIn = Math.max(Math.random() * company.advertisesIn.length >> 0, 1);
+    const shuffledSources = shuffle(company.advertisesIn);
+    return shuffledSources.slice(0, numberOfSourcesAdvertisedIn);
 }
 
 const determineJobCompetencies = (company, difficulty, competencies) => {
