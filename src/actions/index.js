@@ -20,10 +20,11 @@ export const exploreSource = (source, effectivenessMult) => dispatch => {
     })
 }
 
-export const applyForJob = job => dispatch => {
+export const changeJobApplicationStatus = (job, newStatus) => dispatch => {
+    console.log('in action', job);
     dispatch({
-        type : types.APPLY_FOR_JOB,
-        payload : {job}
+        type : types.CHANGE_JOB_APPLICATION_STATUS,
+        payload : {job, newStatus}
     })
 }
 

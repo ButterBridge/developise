@@ -1,20 +1,21 @@
 import * as types from '../actions/types';
 import {generateJob, progressJobsByOneDay, affectJobsBySourceExploration} from '../utils/job';
+import { keyByProperty } from '../utils/helpers';
 
 const initialState = {
     day : 0,
     phase : 1,
-    jobs : []
+    jobs : {}
 }
 
 export default (state = initialState, {payload, type}) => {
     switch (type) {
         case types.PROGRESS_TO_NEXT_DAY:
-            const newJobs = Array(Math.random() * 3 >> 0).fill().map(x => generateJob(payload.companies, payload.competencies));
-            const jobsPostProgression = progressJobsByOneDay(state.jobs, payload.competencies);
+            const newJobs = keyByProperty(Array(Math.random() * 3 >> 0).fill().map(x => generateJob(payload.companies, payload.competencies)), 'id');
+            const jobsPostProgression = progressJobsByOneDay(Object.values(state.jobs), payload.competencies);
             return {
                 ...state,
-                jobs : [...jobsPostProgression, ...newJobs],
+                jobs : {...jobsPostProgression, ...newJobs},
                 day : state.day + 1,
                 phase : 0
             };
@@ -24,20 +25,21 @@ export default (state = initialState, {payload, type}) => {
                 phase : state.phase + 1
             };
         case types.EXPLORE_SOURCE:
-            const jobsPostSourceExploration = affectJobsBySourceExploration(state.jobs, payload.source, payload.effectivenessMult);
+            const jobsPostSourceExploration = affectJobsBySourceExploration(Object.values(state.jobs), payload.source, payload.effectivenessMult);
             return {
                 ...state,
                 jobs : jobsPostSourceExploration
             }
-        case types.APPLY_FOR_JOB:
-            const jobsPostApplication = state.jobs.map(job => {
-                return payload.job === job ?
+        case types.CHANGE_JOB_APPLICATION_STATUS:
+            const jobsPostApplication = keyByProperty(Object.values(state.jobs).map(job => {
+                console.log(payload, job.id)
+                return payload.job.id === job.id ?
                     {
                         ...job,
-                        status : 'applied'
+                        status : payload.newStatus
                     } :
                     job
-            });
+            }), 'id');
             return {
                 ...state,
                 jobs : jobsPostApplication

@@ -1,4 +1,4 @@
-import {pickViaShare, pickViaLoading} from './helpers';
+import {pickViaShare, pickViaLoading, keyByProperty} from './helpers';
 import {shuffle} from 'lodash';
 
 export const generateJob = (companies, competencies) => {
@@ -10,6 +10,7 @@ export const generateJob = (companies, competencies) => {
     const jobPay = determinePay(jobCompany, jobDifficulty, jobLength);
     const jobApplicationDeadline = determineApplicationDeadline(jobCompany);
     const job = {
+        id : Math.random().toFixed(6),
         age : 1,
         status : 'open',
         company : jobCompany,
@@ -73,7 +74,7 @@ const determineApplicationDeadline = company => {
 }
 
 export const progressJobsByOneDay = (jobs, competencies) => {
-    return jobs.reduce((acc, job, i) => {
+    return keyByProperty(jobs.reduce((acc, job, i) => {
         if (job.status === 'open') {
             const newAge = job.age + 1;
             if (job.deadline) {
@@ -95,7 +96,6 @@ export const progressJobsByOneDay = (jobs, competencies) => {
                 const favourAvg = totalCompetencyFavour / competencyCount;
                 const favourModifier = 1 + (favourAvg - 5) / 10;
                 const applicantChance = baseChance * favourModifier;
-                console.log({baseChance, totalCompetencyFavour, competencyCount, favourAvg, favourModifier, applicantChance});
                 const applicantRoll = Math.random() * 10;
                 if (applicantRoll > applicantChance) {
                     console.log(i, 'there was not a successful applicant today!')
@@ -112,11 +112,11 @@ export const progressJobsByOneDay = (jobs, competencies) => {
             age : job.age + 1
         })
         return acc;
-    }, [])
+    }, []), 'id');
 }
 
 export const affectJobsBySourceExploration = (jobs, source, effectivenessMult) => {
-    return jobs.map(job => {
+    return keyByProperty(jobs.map(job => {
         if (job.status === 'open') {
             let newHoursToDiscover = (job.hoursToDiscover > 0 && job.advertisedIn.includes(source.ref)) ? job.hoursToDiscover - (effectivenessMult || 1) * 6 : job.hoursToDiscover;
             let newDiscoveredIn = (newHoursToDiscover <= 0 && !job.discoveredIn) ? source : job.discoveredIn
@@ -126,5 +126,5 @@ export const affectJobsBySourceExploration = (jobs, source, effectivenessMult) =
                 discoveredIn : newDiscoveredIn
             }
         } else return job;
-    }) 
+    }), 'id');
 }

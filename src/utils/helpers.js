@@ -1,3 +1,9 @@
+export const keyByProperty = (arr, prop) => {
+    return arr.reduce((acc, element) => {
+        acc[element[prop]] = element;
+        return acc;
+    }, {})
+}
 
 export const pickViaShare = (entities, key) => {
     const spread = Object.values(entities).reduce((spreadSoFar, entity) => {
