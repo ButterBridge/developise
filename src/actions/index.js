@@ -20,6 +20,13 @@ export const exploreSource = (source, effectivenessMult) => dispatch => {
     })
 }
 
+export const applyForJob = job => dispatch => {
+    dispatch({
+        type : types.APPLY_FOR_JOB,
+        payload : {job}
+    })
+}
+
 export const learnCompetency = competency => dispatch => {
     dispatch({
         type : types.LEARN_COMPETENCY,
