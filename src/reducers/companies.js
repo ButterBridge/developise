@@ -1,4 +1,4 @@
-export const getInitialCompaniesState = function () {
+export const getInitialCompaniesState = () => {
     return {
         'family-friends' : {
             name : 'family & friends',

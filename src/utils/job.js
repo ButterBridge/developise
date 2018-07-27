@@ -1,16 +1,17 @@
 import {pickViaShare, pickViaLoading, keyByProperty} from './helpers';
 import {shuffle} from 'lodash';
+import {generate as genId} from 'shortid';
 
-export const generateJob = (companies, competencies) => {
-    const jobCompany = pickViaShare(companies, 'prestige');
-    const jobDifficulty = determineJobDifficulty(jobCompany)
-    const jobCompetencies = determineJobCompetencies(jobCompany, jobDifficulty, competencies);
-    const jobAdvertisedIn = determineJobAdvertisedIn(jobCompany);
-    const jobLength = determineJobLength(jobCompany);
-    const jobPay = determinePay(jobCompany, jobDifficulty, jobLength);
-    const jobApplicationDeadline = determineApplicationDeadline(jobCompany);
+export const generateJob = (companies, competencies, seed) => {
+    const jobCompany = pickViaShare(companies, 'prestige', seed);
+    const jobDifficulty = determineJobDifficulty(jobCompany, seed)
+    const jobCompetencies = determineJobCompetencies(jobCompany, jobDifficulty, competencies, seed);
+    const jobAdvertisedIn = determineJobAdvertisedIn(jobCompany, seed);
+    const jobLength = determineJobLength(jobCompany, seed);
+    const jobPay = determinePay(jobCompany, jobDifficulty, jobLength, seed);
+    const jobApplicationDeadline = determineApplicationDeadline(jobCompany, seed);
     const job = {
-        id : Math.random().toFixed(6),
+        id : genId(),
         age : 1,
         status : 'open',
         company : jobCompany,
@@ -19,7 +20,7 @@ export const generateJob = (companies, competencies) => {
         deadline : jobApplicationDeadline,
         pay : Math.floor(jobPay / 20) * 20,
         advertisedIn : jobAdvertisedIn,
-        hoursToDiscover : Math.random() * 24,
+        hoursToDiscover : (seed || Math.random()) * 24,
         discoveredIn : null,
         applicants : 0,
         hoursToComplete : jobLength,
@@ -29,58 +30,58 @@ export const generateJob = (companies, competencies) => {
     return job;
 }
 
-const determineJobDifficulty = company => {
-    const prestigeDifficulty = Math.floor(Math.random() * company.prestige, 0);
-    const randomDifficulty = Math.floor(Math.random() * 5 - 2.5);
+export const determineJobDifficulty = (company, seed) => {
+    const prestigeDifficulty = Math.floor((seed || Math.random()) * company.prestige);
+    const randomDifficulty = Math.floor((seed || Math.random()) * 5 - 2.5);
     return Math.max(prestigeDifficulty + randomDifficulty, 1);
 }
 
-const determineJobAdvertisedIn = company => {
-    const numberOfSourcesAdvertisedIn = Math.max(Math.random() * company.advertisesIn.length >> 0, 1);
+export const determineJobAdvertisedIn = (company, seed) => {
+    const numberOfSourcesAdvertisedIn = Math.max((seed || Math.random()) * company.advertisesIn.length >> 0, 1);
     const shuffledSources = shuffle(company.advertisesIn);
     return shuffledSources.slice(0, numberOfSourcesAdvertisedIn);
 }
 
-const determineJobCompetencies = (company, difficulty, competencies) => {
+export const determineJobCompetencies = (company, difficulty, competencies, seed) => {
     return Array(difficulty).fill().reduce((acc, x) => {
-        const field = pickViaLoading(company.fields);
+        const field = pickViaLoading(company.fields, seed);
         const fieldCompetencies = Object.values(competencies).reduce((acc, competency) => {
             if (competency.fields.includes(field)) acc[competency.name] = competency;
             return acc;
         }, {});
-        const competency = pickViaShare(fieldCompetencies, 'favour');
+        const competency = pickViaShare(fieldCompetencies, 'favour', seed);
         acc[competency.name] = acc[competency.name] ? acc[competency.name] + 1 : 1;
         return acc;
     }, {});
 }
 
-const determineJobLength = company => {
-    const baseHours = Math.floor(Math.random() * 24);
+export const determineJobLength = (company, seed) => {
+    const baseHours = Math.floor((seed || Math.random()) * 24);
     return Math.max(baseHours + company.prestige, 2); 
 }
 
-const determinePay = (company, difficulty, length) => {
+export const determinePay = (company, difficulty, length, seed) => {
     const basePay = Math.pow(company.prestige * (difficulty + 1) * length, 2) / 1000;
-    const adjPerc = Math.random() * 100 - 50;
+    const adjPerc = (seed || Math.random()) * 100 - 50;
     const adjFactor = basePay.toString().length;
     const adjTotal = basePay * (1 + adjPerc) * adjFactor;
     return Math.max(basePay + adjTotal, 0);
 }
 
-const determineApplicationDeadline = company => {
-    const rnd = Math.random();
+export const determineApplicationDeadline = (company, seed) => {
+    const rnd = (seed || Math.random());
     return rnd < company.formality ?
-        Math.floor(3 + Math.random() * 7) :
+        Math.floor(3 + (seed || Math.random()) * 7) :
         null
 }
 
-export const progressJobsByOneDay = (jobs, competencies) => {
+export const progressJobsByOneDay = (jobs, competencies, seed) => {
     return keyByProperty(jobs.reduce((acc, job, i) => {
         if (job.status === 'open') {
-            const progressedJob = progressOpenJobByOneDay(job, competencies);
+            const progressedJob = progressOpenJobByOneDay(job, competencies, seed);
             if (progressedJob) acc.push(progressedJob);
         } else if (job.status === 'applied') {
-            const progressedJob = progressAppliedJobByOneDay(job);
+            const progressedJob = progressAppliedJobByOneDay(job, seed);
         } else acc.push({
             ...job,
             age : job.age + 1
@@ -89,7 +90,7 @@ export const progressJobsByOneDay = (jobs, competencies) => {
     }, []), 'id');
 }
 
-const progressOpenJobByOneDay = (job, competencies) => {
+export const progressOpenJobByOneDay = (job, competencies, seed) => {
     const newAge = job.age + 1;
     if (job.deadline) {
         if (newAge < job.deadline) {
@@ -110,7 +111,7 @@ const progressOpenJobByOneDay = (job, competencies) => {
         const favourAvg = totalCompetencyFavour / competencyCount;
         const favourModifier = 1 + (favourAvg - 5) / 10;
         const applicantChance = baseChance * favourModifier;
-        const applicantRoll = Math.random() * 10;
+        const applicantRoll = (seed || Math.random()) * 10;
         if (applicantRoll > applicantChance) {
             console.log('there was not a successful applicant today!')
             return {
@@ -123,10 +124,9 @@ const progressOpenJobByOneDay = (job, competencies) => {
     }
 }
 
-const progressAppliedJobByOneDay = (job, player) => {
+export const progressAppliedJobByOneDay = (job, player, seed) => {
     const newAge = job.age + 1;
-    const timeToReply = (job.timeToReply || 1 + Math.random() * job.company.prestige >> 0) - 1;
-    console.log(job);
+    const timeToReply = (job.timeToReply || 1 + (seed || Math.random()) * job.company.prestige >> 0) - 1;
     if (timeToReply > 0) {
         return {
             ...job,
