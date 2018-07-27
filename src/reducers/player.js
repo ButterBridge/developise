@@ -1,17 +1,19 @@
 import * as types from '../actions/types';
 
-const initialState = {
-    name : 'Jonny',
-    portfolio : [],
-    competencies : {
-        'Skillz' : (Math.random() * 1000 >> 0) + 1000,
-        'LMTH' : Math.random() * 500 >> 0,
-        'HearSS' : Math.random() * 500 >> 0
-    },
-    money : 100
+export const getInitialPlayerState = () => {
+    return {
+        name : 'Jonny',
+        portfolio : [],
+        competencies : {
+            'Skillz' : (Math.random() * 1000 >> 0) + 1000,
+            'LMTH' : Math.random() * 500 >> 0,
+            'HearSS' : Math.random() * 500 >> 0
+        },
+        money : 100
+    }
 }
 
-export default (state = initialState, action = {payload : {}}) => {
+export default (state = getInitialPlayerState(), action = {payload : {}}) => {
     switch (action.type) {
     case types.LEARN_COMPETENCY:
         return {

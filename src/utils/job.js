@@ -14,6 +14,7 @@ export const generateJob = (companies, competencies) => {
         age : 1,
         status : 'open',
         company : jobCompany,
+        difficulty : jobDifficulty,
         competencies : jobCompetencies,
         deadline : jobApplicationDeadline,
         pay : Math.floor(jobPay / 20) * 20,
@@ -76,43 +77,69 @@ const determineApplicationDeadline = company => {
 export const progressJobsByOneDay = (jobs, competencies) => {
     return keyByProperty(jobs.reduce((acc, job, i) => {
         if (job.status === 'open') {
-            const newAge = job.age + 1;
-            if (job.deadline) {
-                if (newAge < job.deadline) {
-                    console.log(i, 'a job remains open for applications!')
-                    acc.push({
-                        ...job,
-                        age : newAge
-                    })
-                } else {
-                    console.log(i, 'the deadline for a job application has elapsed!')
-                }
-            } else {
-                const baseChance = (job.age * job.company.prestige || 1);
-                const totalCompetencyFavour = Object.keys(job.competencies).reduce((total, competency) => {
-                    return total + competencies[competency].favour;
-                }, 0);
-                const competencyCount = Object.values(job.competencies).length;
-                const favourAvg = totalCompetencyFavour / competencyCount;
-                const favourModifier = 1 + (favourAvg - 5) / 10;
-                const applicantChance = baseChance * favourModifier;
-                const applicantRoll = Math.random() * 10;
-                if (applicantRoll > applicantChance) {
-                    console.log(i, 'there was not a successful applicant today!')
-                    acc.push({
-                        ...job,
-                        age : newAge
-                    })
-                } else {
-                    console.log(i, 'an applicant took this job!')
-                }
-            }
+            const progressedJob = progressOpenJobByOneDay(job, competencies);
+            if (progressedJob) acc.push(progressedJob);
+        } else if (job.status === 'applied') {
+            const progressedJob = progressAppliedJobByOneDay(job);
         } else acc.push({
             ...job,
             age : job.age + 1
         })
         return acc;
     }, []), 'id');
+}
+
+const progressOpenJobByOneDay = (job, competencies) => {
+    const newAge = job.age + 1;
+    if (job.deadline) {
+        if (newAge < job.deadline) {
+            console.log('a job remains open for applications!')
+            return {
+                ...job,
+                age : newAge
+            }
+        } else {
+            console.log('the deadline for a job application has elapsed!')
+        }
+    } else {
+        const baseChance = (job.age * job.company.prestige || 1);
+        const totalCompetencyFavour = Object.keys(job.competencies).reduce((total, competency) => {
+            return total + competencies[competency].favour;
+        }, 0);
+        const competencyCount = Object.values(job.competencies).length;
+        const favourAvg = totalCompetencyFavour / competencyCount;
+        const favourModifier = 1 + (favourAvg - 5) / 10;
+        const applicantChance = baseChance * favourModifier;
+        const applicantRoll = Math.random() * 10;
+        if (applicantRoll > applicantChance) {
+            console.log('there was not a successful applicant today!')
+            return {
+                ...job,
+                age : newAge
+            }
+        } else {
+            console.log('an applicant took this job!')
+        }
+    }
+}
+
+const progressAppliedJobByOneDay = (job, player) => {
+    const newAge = job.age + 1;
+    const timeToReply = (job.timeToReply || 1 + Math.random() * job.company.prestige >> 0) - 1;
+    console.log(job);
+    if (timeToReply > 0) {
+        return {
+            ...job,
+            age : newAge,
+            timeToReply
+        }
+    } else {
+        const suitabilityScore = Object.values(job.application).reduce((acc, factorScore) => {
+            return acc * factorScore;
+        }, 1);
+        const successBarrier = 0.5 * (1 + (suitabilityScore - job.difficulty) / 10);
+        //TODO : change application status on success!
+    }
 }
 
 export const affectJobsBySourceExploration = (jobs, source, effectivenessMult) => {

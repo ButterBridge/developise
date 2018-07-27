@@ -1,39 +1,39 @@
 import * as types from './types';
 import store from '../store';
 
-export const progressToNextDay = () => dispatch => {
+export const progressToNextDay = () => {
     const {companies, competencies} = store.getState();
-    dispatch({
+    const newJobCount = Math.random() * 3 >> 0
+    return {
         type : types.PROGRESS_TO_NEXT_DAY,
         payload : {
-            companies, competencies
+            companies, competencies, newJobCount
         }
-    });
+    };
 }
 
-export const progressToNextPhase = () => dispatch => dispatch({type : types.PROGRESS_TO_NEXT_PHASE});
+export const progressToNextPhase = () => ({type : types.PROGRESS_TO_NEXT_PHASE});
 
-export const exploreSource = (source, effectivenessMult) => dispatch => {
-    dispatch({
+export const exploreSource = (source, effectivenessMult) => {
+    return {
         type : types.EXPLORE_SOURCE,
         payload : {source, effectivenessMult}
-    })
+    }
 }
 
-export const changeJobApplicationStatus = (job, newStatus) => dispatch => {
-    console.log('in action', job);
-    dispatch({
+export const changeJobApplicationStatus = (job, newStatus, indicator, indication) => {
+    return {
         type : types.CHANGE_JOB_APPLICATION_STATUS,
-        payload : {job, newStatus}
-    })
+        payload : {job, newStatus, indicator, indication}
+    }
 }
 
-export const learnCompetency = competency => dispatch => {
-    dispatch({
+export const learnCompetency = competency => {
+    return {
         type : types.LEARN_COMPETENCY,
         payload : {
             competency,
             increase : Math.random() * 60
         }
-    });
+    };
 }

@@ -2,16 +2,18 @@ import * as types from '../actions/types';
 import {generateJob, progressJobsByOneDay, affectJobsBySourceExploration} from '../utils/job';
 import { keyByProperty } from '../utils/helpers';
 
-const initialState = {
-    day : 0,
-    phase : 1,
-    jobs : {}
+export function getInitialGameState () {
+    return {
+        day : 0,
+        phase : 1,
+        jobs : {}
+    }
 }
 
-export default (state = initialState, {payload, type}) => {
+export default (state = getInitialGameState(), {payload, type}) => {
     switch (type) {
         case types.PROGRESS_TO_NEXT_DAY:
-            const newJobs = keyByProperty(Array(Math.random() * 3 >> 0).fill().map(x => generateJob(payload.companies, payload.competencies)), 'id');
+            const newJobs = keyByProperty(Array(payload.newJobCount).fill().map(x => generateJob(payload.companies, payload.competencies)), 'id');
             const jobsPostProgression = progressJobsByOneDay(Object.values(state.jobs), payload.competencies);
             return {
                 ...state,
@@ -36,7 +38,8 @@ export default (state = initialState, {payload, type}) => {
                 return payload.job.id === job.id ?
                     {
                         ...job,
-                        status : payload.newStatus
+                        status : payload.newStatus,
+                        [payload.indicator] : payload.indication
                     } :
                     job
             }), 'id');
