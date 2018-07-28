@@ -8,7 +8,7 @@ export const getSampleJob = () => ({
         'Skillz' : 1,
         'Design' : 1
     },
-    deadline : 10,
+    deadline : 7,
     pay : 200,
     advertisedIn : 'social media',
     hoursToDiscover : 10,

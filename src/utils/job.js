@@ -18,7 +18,7 @@ export const generateJob = (companies, competencies, seed) => {
         difficulty : jobDifficulty,
         competencies : jobCompetencies,
         deadline : jobApplicationDeadline,
-        pay : Math.floor(jobPay / 20) * 20,
+        pay : jobPay,
         advertisedIn : jobAdvertisedIn,
         hoursToDiscover : (seed || Math.random()) * 24,
         discoveredIn : null,
@@ -61,11 +61,12 @@ export const determineJobLength = (company, seed) => {
 }
 
 export const determinePay = (company, difficulty, length, seed) => {
-    const basePay = Math.pow(company.prestige * (difficulty + 1) * length, 2) / 1000;
-    const adjPerc = (seed || Math.random()) * 100 - 50;
-    const adjFactor = basePay.toString().length;
+    const basePay = Math.pow(company.prestige * (difficulty + 1) * length, 2) / 500;
+    const adjPerc = ((seed || Math.random()) * 100 - 50) / 100;
+    const adjFactor = (basePay >> 0).toString().length;
     const adjTotal = basePay * (1 + adjPerc) * adjFactor;
-    return Math.max(basePay + adjTotal, 0);
+    const total = Math.floor((basePay + adjTotal) / 20) * 20
+    return Math.max(total, 0);
 }
 
 export const determineApplicationDeadline = (company, seed) => {
